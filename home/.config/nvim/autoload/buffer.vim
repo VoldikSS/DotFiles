@@ -49,10 +49,19 @@ function! s:clean_not_current_buf() abort
   call util#show_msg('cleaned ' . tally . ' Files')
 endfunction
 
-function! buffer#clean_buffer(bang) abort
+function! buffer#clean(bang) abort
   if a:bang
     call s:clean_not_current_buf()
   else
     call s:clean_not_displayed_buf()
+  endif
+endfunction
+
+function! buffer#write() abort
+  if empty(bufname()) 
+    let filename = strftime('%Y%m%d%I%M')
+    execute printf('write /tmp/nvim/%s.txt', filename)
+  else
+    write
   endif
 endfunction

@@ -47,3 +47,5 @@
 	prune = true
 [split-diffs]
 	theme-name = github-light
+[push]
+	default = current

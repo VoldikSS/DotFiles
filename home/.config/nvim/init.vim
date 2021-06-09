@@ -101,8 +101,9 @@ endif
 " Plugin: {{{
 call plug#begin('~/.cache/nvim/plugged')
 " Languages
-if has('nvim')
+if has('nvim') && !exists('g:vscode')
 Plug 'nvim-treesitter/nvim-treesitter'
+" Plug 'romgrk/nvim-treesitter-context'
 Plug 'sindrets/diffview.nvim'
 Plug 'nacro90/numb.nvim'
 endif
@@ -130,12 +131,14 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'itchyny/vim-cursorword'
 " Git
 Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim', {'on': 'GV'}
 Plug 'tpope/vim-git'
 " Others
 " Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 " Plug 'brglng/vim-im-select'
 " Plug 'puremourning/vimspector'
-Plug 'phaazon/hop.nvim', {'on': 'HopWord', 'commit': '3655626906859f572b8c4ce9dd9d69e2e1e43b81'}
+" Plug 'wellle/context.vim' " TODO
+Plug 'phaazon/hop.nvim'
 Plug 'yangmillstheory/vim-snipe', {'on': ['<Plug>(snipe-f)', '<Plug>(snipe-F)']}
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 Plug 'andrewradev/sideways.vim'
@@ -167,7 +170,7 @@ call plug#end()
 " }}}
 
 " put this after plugxxx, do not source colorscheme twice
-colorscheme gruvbox
+colorscheme srcery 
 
 " Autocmds: {{{
 " autocmd CmdlineEnter * call feedkeys("\<C-p>")
@@ -196,7 +199,7 @@ augroup END
 augroup AutoSaveBuffer
   autocmd!
   " autocmd FocusLost,InsertLeave * call file#update()
-  autocmd CursorHold * call file#update()
+  " autocmd CursorHold * call file#update()
 augroup END
 
 " augroup LineNumber
@@ -341,8 +344,7 @@ call s:SetCommandAbbrs('gco', 'Git checkout')
 call s:SetCommandAbbrs('gd', 'Gvdiff')
 call s:SetCommandAbbrs('gl', 'Git lg')
 call s:SetCommandAbbrs('gpull', 'AsyncRun git pull')
-call s:SetCommandAbbrs('gp', 'AsyncRun -silent git push')
-call s:SetCommandAbbrs('Gpush', 'AsyncRun -silent git push')
+call s:SetCommandAbbrs('gp', 'AsyncRun -silent git push -f')
 call s:SetCommandAbbrs('gs', 'Gstatus')
 call s:SetCommandAbbrs('l', 'Leaderf')
 call s:SetCommandAbbrs('m', 'vertical Man')
@@ -377,7 +379,7 @@ command! -nargs=? Bline call command#insert_line('bold', <f-args>)
 command! -nargs=? Cline call command#insert_line('comment', <f-args>)
 
 command! -nargs=+ Grep  call command#grep(<q-args>)
-command! -bang    BClean call buffer#clean_buffer(<bang>0)
+command! -bang    BClean call buffer#clean(<bang>0)
 command! -nargs=* -complete=file Make AsyncRun -cwd=<root> -program=make @ <args>
 command! -nargs=? -complete=file  ExternalOpen  call util#external_open(<q-args>)
 
@@ -389,7 +391,7 @@ command! -nargs=+ -complete=command Messages call command#tab_message(<q-args>)
 command! -nargs=+ -complete=expression Echo Messages execute 'echo ' . <f-args>
 
 command! -bang    RunTaskOnSaveChange call task#run_on_save_change(<bang>0)
-command! -nargs=? -complete=customlist,task#complete RunTask call task#run(<f-args>)
+command! -bang -nargs=? -complete=customlist,task#complete RunTask call task#run(<bang>0, <f-args>)
 
 command! -nargs=? -complete=customlist,command#colors ColorScheme
       \ call command#colorscheme(<q-args>)
@@ -441,6 +443,7 @@ nnoremap <silent> * m`:keepjumps normal! *``zz<cr>
 nnoremap <silent> # m`:keepjumps normal! #``zz<cr>
 xnoremap <silent> * :<C-u>call keymap#x#visual_star_search('/')<CR>/<C-R>=@/<CR><CR>N
 xnoremap <silent> # :<C-u>call keymap#x#visual_star_search('?')<CR>?<C-R>=@/<CR><CR>n
+nnoremap <silent> ;n *
 " Substitute:
 nnoremap ! <Plug>(RepeatRedo)
 nnoremap <C-r> :%s/\<<C-r><C-w>\>/<C-r><C-w>/g \| normal! `` <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
@@ -498,13 +501,14 @@ inoremap <silent> <C-o> <End><CR>
 inoremap <silent> <M-o> <Esc>O
 inoremap <silent> <C-d> <Esc>ddi
 inoremap <silent> <C-v> <C-o>"+]p
-nnoremap <silent>       <Leader>w :write<CR>
+nnoremap <silent>       <Leader>w :call buffer#write()<CR>
 nnoremap <silent>       <Leader>W :noautocmd Bufdo if !empty(bufname()) && !&ro && &ma \| write \| endif<CR>
 nnoremap <silent>       <M-q> q
 nnoremap <silent>       <Leader>Q Q
 nnoremap <silent><expr> q len(getbufinfo({'buflisted':1})) < 2 ? ":q!\<CR>" : ":bd!\<CR>"
 nnoremap <silent>       Q         :qa!<CR>
 nnoremap <silent> <Leader>d :<C-u>call keymap#n#safe_bdelete()<CR>
+nnoremap <silent> <Leader>D :<C-u>BClean<CR>
 " TerminalMode: move
 " tnoremap <silent> <C-h> <Left>
 " tnoremap <silent> <C-l> <Right>
@@ -547,13 +551,6 @@ tnoremap <expr> [    keymap#t#pairs('[', '[]')
 tnoremap <expr> {    keymap#t#pairs('{', '{}')
 if has('nvim')
   tnoremap <Esc>  <C-\><C-n>
-endif
-if has('win32') || has('win64')
-  nnoremap <silent> <Leader>n :vert term<CR>
-  nnoremap <silent> ,n        :term<CR>
-else
-  nnoremap <silent> <Leader>n :vsplit term://zsh<CR>
-  nnoremap <silent> ,n        :edit term://zsh<CR>
 endif
 " WindowOperation:
 if has('nvim')
@@ -716,6 +713,7 @@ let g:coc_global_extensions = [
       \ 'coc-git',
       \ 'coc-highlight',
       \ 'coc-html',
+      \ 'coc-html-css-support',
       \ 'coc-java',
       \ 'coc-json',
       \ 'coc-dash-complete',
@@ -817,7 +815,6 @@ let g:lightline = {
   \ 'component': {
     \ 'lineinfo': ' %l,%-v',
     \ 'percent': '%p%%',
-    \ 'close': '%{has("nvim") ? " NVIM " : " VIM "}',
     \ 'vim_logo': "#"
   \ },
   \ 'component_function': {
@@ -1045,6 +1042,7 @@ nmap <silent> ga <Plug>(EasyAlign)
 let g:vimspector_enable_mappings = 'HUMAN'
 " hop.nvim
 " remove mapping set by vim-signature
+lua require'hop'.setup()
 call timer_start(100, {->execute("nunmap ']")})
 call timer_start(100, {->execute("nunmap '[")})
 nnoremap <silent><nowait> ' <Cmd>HopWord<CR>
@@ -1057,6 +1055,19 @@ let g:im_select_enable_focus_events = 0
 " vista.vim
 let g:vista_echo_cursor_strategy = 'floating_win'
 let g:vista_close_on_jump = 0
+let g:vista_executive_for = {
+      \ 'typescriptreact': 'coc',
+      \ }
+" wellle/context.vim
+let g:context_max_height = 3
+let g:context_add_mappings = 0
+let g:context_nvim_no_redraw = 0
+let g:context_border_char = '─'
+let g:context_highlight_normal = 'Normal'
+let g:context_highlight_border = 'Comment'
+let g:context_highlight_tag    = 'Special'
+let g:Context_border_indent = { -> [0, 0] }
+" autocmd BufReadPost * call timer_start(100, { -> execute('syntax on')}) " fix context not highlighted
 " glacambre/firenvim
 if exists('g:started_by_firenvim')
   set guifont=MonacoB2\ Nerd\ Font\ Mono:h15
@@ -1200,7 +1211,7 @@ require'diffview'.setup {
     -- The `view` bindings are active in the diff buffers, only when the current
     -- tabpage is a Diffview.
     view = {
-      ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file 
+      ["<tab>"]     = cb("select_next_entry"),  -- Open the diff for the next file
       ["<s-tab>"]   = cb("select_prev_entry"),  -- Open the diff for the previous file
     },
     file_panel = {

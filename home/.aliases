@@ -24,6 +24,7 @@ alias pip_pkglist_backup='pip list > $HOME/dotfiles/misc/pip/pip_list.txt'
 alias pip_pkglist_restore='for x in $(cat $HOME/dotfiles/misc/pip/pip_list.txt); do pip install $x; done'
 
 # git
+alias g='git'
 alias ga='git add'
 alias gaa='git add .'
 alias gb='git branch'
