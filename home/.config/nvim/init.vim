@@ -103,7 +103,7 @@ call plug#begin('~/.cache/nvim/plugged')
 " Languages
 if has('nvim') && !exists('g:vscode')
 Plug 'nvim-treesitter/nvim-treesitter'
-" Plug 'romgrk/nvim-treesitter-context'
+Plug 'romgrk/nvim-treesitter-context'
 Plug 'sindrets/diffview.nvim'
 Plug 'nacro90/numb.nvim'
 endif
@@ -1122,81 +1122,82 @@ require('numb').setup()
 
 -- nvim-treesitter
 require('nvim-treesitter.configs').setup {
-    highlight = {
-        enable = true,
-        disable = { 'rust', 'markdown', 'json', 'yaml' },
-    },
-    indent = {
-        enable = false
-    },
-    incremental_selection = {
-        enable = true,
-        disable = { 'cpp', 'lua' },
-        keymaps = {
-          init_selection = 'gnn',
-          node_incremental = "grn",
-          scope_incremental = "grc",
-          node_decremental = "grm",
-        }
-    },
-    refactor = {
-      highlight_definitions = {
-        enable = false
-      },
-      highlight_current_scope = {
-        enable = false
-      },
-      smart_rename = {
-        enable = true,
-        keymaps = {
-          smart_rename = "grr"
-        }
-      },
-      navigation = {
-        enable = true,
-        keymaps = {
-          goto_definition = "gnd",
-          list_definitions = "gnD"
-        }
-      }
-    },
-    textobjects = {
-      enable = true,
-      disable = {},
-      keymaps = {
-          ["iL"] = {
-            -- you can define your own textobjects directly here
-            python = "(function_definition) @function",
-            cpp = "(function_definition) @function",
-            c = "(function_definition) @function",
-            java = "(method_declaration) @function"
-          },
-          -- or you use the queries from supported languages with textobjects.scm
-          ["af"] = "@function.outer",
-          ["if"] = "@function.inner",
-          ["aC"] = "@class.outer",
-          ["iC"] = "@class.inner",
-          ["ac"] = "@conditional.outer",
-          ["ic"] = "@conditional.inner",
-          ["ae"] = "@block.outer",
-          ["ie"] = "@block.inner",
-      }
-    },
-    ensure_installed = {
-      'bash',
-      'c',
-      'cpp',
-      'css',
-      'go',
-      'html',
-      'java',
-      'javascript',
-      'json',
-      'python',
-      'rust',
-      'toml',
-      'typescript'
+  ensure_installed = {
+    'bash',
+    'c',
+    'cpp',
+    'css',
+    'go',
+    'html',
+    'java',
+    'javascript',
+    'json',
+    'python',
+    'rust',
+    'toml',
+    'tsx',
+    'typescript'
+  },
+  highlight = {
+    enable = true,
+    disable = { 'rust', 'markdown', 'json', 'yaml' },
+  },
+  indent = {
+    enable = false
+  },
+  incremental_selection = {
+    enable = true,
+    disable = { 'cpp', 'lua' },
+    keymaps = {
+      init_selection = 'gnn',
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
     }
+  },
+  refactor = {
+    highlight_definitions = {
+      enable = false
+    },
+    highlight_current_scope = {
+      enable = false
+    },
+    smart_rename = {
+      enable = true,
+      keymaps = {
+        smart_rename = "grr"
+      }
+    },
+    navigation = {
+      enable = true,
+      keymaps = {
+        goto_definition = "gnd",
+        list_definitions = "gnD"
+      }
+    }
+  },
+  textobjects = {
+    enable = true,
+    disable = {},
+    keymaps = {
+      ["iL"] = {
+        -- you can define your own textobjects directly here
+        python = "(function_definition) @function",
+        cpp = "(function_definition) @function",
+        c = "(function_definition) @function",
+        java = "(method_declaration) @function"
+      },
+      -- or you use the queries from supported languages with textobjects.scm
+      ["af"] = "@function.outer",
+      ["if"] = "@function.inner",
+      ["aC"] = "@class.outer",
+      ["iC"] = "@class.inner",
+      ["ac"] = "@conditional.outer",
+      ["ic"] = "@conditional.inner",
+      ["ae"] = "@block.outer",
+      ["ie"] = "@block.inner",
+    }
+  }
 }
 
 -- sindrets/diffview.nvim
