@@ -104,6 +104,7 @@ call plug#begin('~/.cache/nvim/plugged')
 if has('nvim') && !exists('g:vscode')
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'romgrk/nvim-treesitter-context'
+" Plug 'kristijanhusak/orgmode.nvim'
 Plug 'sindrets/diffview.nvim'
 Plug 'nacro90/numb.nvim'
 endif
@@ -137,7 +138,6 @@ Plug 'tpope/vim-git'
 " Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 " Plug 'brglng/vim-im-select'
 " Plug 'puremourning/vimspector'
-" Plug 'wellle/context.vim' " TODO
 Plug 'phaazon/hop.nvim'
 Plug 'yangmillstheory/vim-snipe', {'on': ['<Plug>(snipe-f)', '<Plug>(snipe-F)']}
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
@@ -1058,16 +1058,6 @@ let g:vista_close_on_jump = 0
 let g:vista_executive_for = {
       \ 'typescriptreact': 'coc',
       \ }
-" wellle/context.vim
-let g:context_max_height = 3
-let g:context_add_mappings = 0
-let g:context_nvim_no_redraw = 0
-let g:context_border_char = '─'
-let g:context_highlight_normal = 'Normal'
-let g:context_highlight_border = 'Comment'
-let g:context_highlight_tag    = 'Special'
-let g:Context_border_indent = { -> [0, 0] }
-" autocmd BufReadPost * call timer_start(100, { -> execute('syntax on')}) " fix context not highlighted
 " glacambre/firenvim
 if exists('g:started_by_firenvim')
   set guifont=MonacoB2\ Nerd\ Font\ Mono:h15
@@ -1233,3 +1223,10 @@ require'diffview'.setup {
 
 EOF
 endif
+
+lua <<EOF
+-- require('orgmode').setup({
+--   org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
+--   org_default_notes_file = '~/Dropbox/org/refile.org',
+-- })
+-- EOF
