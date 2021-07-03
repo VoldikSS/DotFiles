@@ -104,7 +104,7 @@ call plug#begin('~/.cache/nvim/plugged')
 if has('nvim') && !exists('g:vscode')
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'romgrk/nvim-treesitter-context'
-" Plug 'kristijanhusak/orgmode.nvim'
+Plug 'kristijanhusak/orgmode.nvim'
 Plug 'sindrets/diffview.nvim'
 Plug 'nacro90/numb.nvim'
 endif
@@ -121,9 +121,9 @@ if !exists('g:vscode') " TODO: use packer.nvim's `cond`
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 endif
 " Style
-Plug 'Yggdroot/indentLine'
+" Plug 'Yggdroot/indentLine'
 Plug 'kshenoy/vim-signature'
-Plug 'lukas-reineke/indent-blankline.nvim' " can not exclude startify on the first :Startify
+Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'guns/xterm-color-table.vim', {'on': 'XtermColorTable'}
 Plug 'itchyny/lightline.vim'
 Plug 'mengelbrecht/lightline-bufferline'
@@ -136,7 +136,7 @@ Plug 'junegunn/gv.vim', {'on': 'GV'}
 Plug 'tpope/vim-git'
 " Others
 " Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
-" Plug 'brglng/vim-im-select'
+Plug 'brglng/vim-im-select'
 " Plug 'puremourning/vimspector'
 Plug 'phaazon/hop.nvim'
 Plug 'yangmillstheory/vim-snipe', {'on': ['<Plug>(snipe-f)', '<Plug>(snipe-F)']}
@@ -196,11 +196,11 @@ augroup FileTypeAutocmds
         \ call matchadd('Special', '\W\<\(@VOLDIKSS\|@voldikss\)\>')
 augroup END
 
-augroup AutoSaveBuffer
-  autocmd!
-  " autocmd FocusLost,InsertLeave * call file#update()
-  " autocmd CursorHold * call file#update()
-augroup END
+" augroup AutoSaveBuffer
+"   autocmd!
+"   autocmd FocusLost,InsertLeave * call file#update()
+"   autocmd CursorHold * call file#update()
+" augroup END
 
 " augroup LineNumber
 "   autocmd!
@@ -443,7 +443,7 @@ nnoremap <silent> * m`:keepjumps normal! *``zz<cr>
 nnoremap <silent> # m`:keepjumps normal! #``zz<cr>
 xnoremap <silent> * :<C-u>call keymap#x#visual_star_search('/')<CR>/<C-R>=@/<CR><CR>N
 xnoremap <silent> # :<C-u>call keymap#x#visual_star_search('?')<CR>?<C-R>=@/<CR><CR>n
-nnoremap <silent> ;n *
+nnoremap <silent> ;n m`*
 " Substitute:
 nnoremap ! <Plug>(RepeatRedo)
 nnoremap <C-r> :%s/\<<C-r><C-w>\>/<C-r><C-w>/g \| normal! `` <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
@@ -1221,12 +1221,11 @@ require'diffview'.setup {
   }
 }
 
+-- orgmode
+require('orgmode').setup({
+  org_agenda_files = {'~/.config/org/*', '~/my-orgs/**/*'},
+  org_default_notes_file = '~/.config/org/refile.org',
+})
+
 EOF
 endif
-
-lua <<EOF
--- require('orgmode').setup({
---   org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
---   org_default_notes_file = '~/Dropbox/org/refile.org',
--- })
--- EOF
