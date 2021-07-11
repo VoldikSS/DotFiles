@@ -37,7 +37,10 @@
   "eslint.autoFixOnSave": false,
   "explorer.enableFloatinput": false,
   "explorer.expandStores": true,
-  "explorer.file.autoReveal": true,
+  "explorer.file.reveal.auto": true,
+  "explorer.file.reveal.filter": {
+    "literals": ["node_modules"]
+  },
   "explorer.previewAction.content.maxHeight": 500,
   "explorer.git.showIgnored": true,
   "explorer.git.icon.status.ignored": " ",
@@ -108,7 +111,7 @@
   "explorer.trash.command": "rm -r %s",
   "explorer.width": 30,
   "git.addedSign.hlGroup": "GitAdd",
-  "git.addGBlameToVirtualText": false,
+  "git.addGBlameToVirtualText": true,
   "git.changeRemovedSign.hlGroup": "GitDeleteTopAndBottom",
   "git.changedSign.hlGroup": "GitModify",
   "git.enableGutters": true,

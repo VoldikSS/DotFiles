@@ -26,7 +26,7 @@ set showmode shortmess+=I cmdheight=1 cmdwinheight=10 showbreak= breakindent bre
 set showmatch matchtime=0 matchpairs+=<:>,《:》,（:）,【:】,“:”,‘:’
 set noshowcmd noruler rulerformat= laststatus=2
 set title ruler titlelen=100 titleold= titlestring=%f noicon norightleft showtabline=2
-set cursorline nocursorcolumn colorcolumn= concealcursor=nvc conceallevel=0
+set cursorline nocursorcolumn colorcolumn=9999 concealcursor=nvc conceallevel=0
 set list listchars=tab:\|\ ,extends:>,precedes:< synmaxcol=3000 ambiwidth=single
 set nosplitbelow nosplitright nostartofline linespace=0 whichwrap=b,s scrolloff=5 sidescroll=0
 set equalalways nowinfixwidth nowinfixheight winminwidth=3 winheight=3 winminheight=3
@@ -103,7 +103,8 @@ call plug#begin('~/.cache/nvim/plugged')
 " Languages
 if has('nvim') && !exists('g:vscode')
 Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'romgrk/nvim-treesitter-context'
+Plug 'kevinhwang91/nvim-bqf'
+" Plug 'romgrk/nvim-treesitter-context'
 Plug 'kristijanhusak/orgmode.nvim'
 Plug 'sindrets/diffview.nvim'
 Plug 'nacro90/numb.nvim'
@@ -170,7 +171,7 @@ call plug#end()
 " }}}
 
 " put this after plugxxx, do not source colorscheme twice
-colorscheme srcery 
+colorscheme srcery
 
 " Autocmds: {{{
 " autocmd CmdlineEnter * call feedkeys("\<C-p>")
@@ -290,7 +291,7 @@ function! s:OnColorSchemeLoaded() abort
   exe 'hi CocErrorSign          guifg=#ff0000 guibg=' . signcolumn_bg
   exe 'hi CursorLineNr          guibg='               . signcolumn_bg
 
-  hi VertSplit                  guifg=cyan
+  hi VertSplit                  guifg=deeppink
   " hi CocFloating                guibg=blue
   hi CursorLineNr               guifg=orange
   " hi Normal                     guibg=#111111 guifg=#eeeeee
@@ -443,7 +444,8 @@ nnoremap <silent> * m`:keepjumps normal! *``zz<cr>
 nnoremap <silent> # m`:keepjumps normal! #``zz<cr>
 xnoremap <silent> * :<C-u>call keymap#x#visual_star_search('/')<CR>/<C-R>=@/<CR><CR>N
 xnoremap <silent> # :<C-u>call keymap#x#visual_star_search('?')<CR>?<C-R>=@/<CR><CR>n
-nnoremap <silent> ;n m`*
+nnoremap <silent> <Space>n m`:normal! #<CR>
+nnoremap <silent> <Leader>n m`:normal! *<CR>
 " Substitute:
 nnoremap ! <Plug>(RepeatRedo)
 nnoremap <C-r> :%s/\<<C-r><C-w>\>/<C-r><C-w>/g \| normal! `` <Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
@@ -1103,14 +1105,11 @@ let g:nvimgdb_config = {
       \ 'codewin_command': 'new'
       \ }
 
-" lua plugins
-if has('nvim')
+" nacro90/numb.nvim
+lua require('numb').setup()
+
+" nvim-treesitter
 lua <<EOF
-
--- nacro90/numb.nvim
-require('numb').setup()
-
--- nvim-treesitter
 require('nvim-treesitter.configs').setup {
   ensure_installed = {
     'bash',
@@ -1189,8 +1188,10 @@ require('nvim-treesitter.configs').setup {
     }
   }
 }
+EOF
 
--- sindrets/diffview.nvim
+" sindrets/diffview.nvim
+lua <<EOF
 local cb = require'diffview.config'.diffview_callback
 require'diffview'.setup {
   diff_binaries = false,    -- Show diffs for binaries
@@ -1220,12 +1221,50 @@ require'diffview'.setup {
     }
   }
 }
+EOF
 
--- orgmode
+" /kristijanhusak/orgmode
+lua <<EOF
 require('orgmode').setup({
   org_agenda_files = {'~/.config/org/*', '~/my-orgs/**/*'},
   org_default_notes_file = '~/.config/org/refile.org',
 })
-
 EOF
-endif
+
+" kevinhwang91/nvim-bqf
+hi BqfPreviewBorder guifg=#50a14f ctermfg=71
+hi link BqfPreviewRange Search
+let g:coc_enable_locationlist = 0
+augroup CocNvimBqf
+  autocmd!
+  autocmd User CocLocationsChange ++nested call Coc_qf_jump2loc(g:coc_jump_locations)
+augroup END
+function! Coc_qf_jump2loc(locs) abort
+  let loc_ranges = map(deepcopy(a:locs), 'v:val.range')
+  call setloclist(0, [], ' ', {
+    \ 'title': 'CocLocationList',
+    \ 'items': a:locs,
+    \ 'context': {'bqf': {'lsp_ranges_hl': loc_ranges}}
+  \ })
+  let winid = getloclist(0, {'winid': 0}).winid
+  if winid == 0
+    botright lwindow
+  else
+    call win_gotoid(winid)
+  endif
+endfunction
+lua <<EOF
+require('bqf').setup({
+  auto_enable = true,
+  preview = {
+    win_height = 12,
+    win_vheight = 12,
+    delay_syntax = 80,
+    border_chars = {'┃', '┃', '━', '━', '┏', '┓', '┗', '┛', '█'}
+  },
+  func_map = {
+    open = 'o',
+    openc = '<CR>'
+  }
+})
+EOF
