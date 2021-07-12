@@ -109,6 +109,7 @@ Plug 'kristijanhusak/orgmode.nvim'
 Plug 'sindrets/diffview.nvim'
 Plug 'nacro90/numb.nvim'
 endif
+Plug 'vimwiki/vimwiki', {'on': ['<Plug>VimwikiIndex', '<Plug>VimwikiDiaryIndex']}
 Plug 'sakhnik/nvim-gdb', {'do': ':!./install.sh', 'on': 'GdbStart'} " use to debug nvim itself
 " Plug 'fatih/vim-go', {'for': 'go'}
 Plug 'iamcco/markdown-preview.nvim', {'for': 'markdown', 'do': 'cd app && npm install'}
@@ -1083,6 +1084,22 @@ let g:firenvim_config = {
 \ }
 let fc = g:firenvim_config['localSettings']
 let fc['https?://zhihu.com/.*'] = { 'takeover': 'never', 'priority': 1 }
+" vimwiki/vimwiki
+let g:vimwiki_key_mappings = {
+      \ 'all_maps': 1,
+      \ 'global': 0,
+      \ 'headers': 1,
+      \ 'text_objs': 1,
+      \ 'table_format': 1,
+      \ 'table_mappings': 0,
+      \ 'lists': 1,
+      \ 'links': 1,
+      \ 'html': 1,
+      \ 'mouse': 0,
+      \ }
+nmap <Space>ww <Plug>VimwikiIndex
+nmap <Space>wi <Plug>VimwikiDiaryIndex
+nmap <Space>wt <Plug>VimwikiToggleListItem
 " sakhnik/nvim-gdb
 let g:nvimgdb_disable_start_keymaps = 1
 let g:nvimgdb_config = {
