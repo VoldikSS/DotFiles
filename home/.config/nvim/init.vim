@@ -1098,7 +1098,7 @@ let g:vimwiki_key_mappings = {
       \ 'mouse': 0,
       \ }
 nmap <Space>ww <Plug>VimwikiIndex
-nmap <Space>wi <Plug>VimwikiDiaryIndex
+nmap <Space>wd <Plug>VimwikiDiaryIndex
 nmap <Space>wt <Plug>VimwikiToggleListItem
 " sakhnik/nvim-gdb
 let g:nvimgdb_disable_start_keymaps = 1
