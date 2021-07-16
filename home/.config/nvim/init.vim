@@ -304,6 +304,9 @@ function! s:OnColorSchemeLoaded() abort
 
   " coclist will(might) change my cursor highlight
   hi Cursor gui=reverse guifg=NONE guibg=NONE
+
+  hi link CocRustTypeHint Comment
+  hi link CocRustChainingHint Comment
 endfunction
 call s:OnColorSchemeLoaded()
 " }}}
@@ -1146,7 +1149,7 @@ require('nvim-treesitter.configs').setup {
   },
   highlight = {
     enable = true,
-    disable = { 'rust', 'markdown', 'json', 'yaml' },
+    disable = { 'markdown', 'json', 'yaml' },
   },
   indent = {
     enable = false
